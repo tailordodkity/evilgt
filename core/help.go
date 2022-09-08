@@ -6,7 +6,7 @@ import (
 	"github.com/chzyer/readline"
 	"github.com/fatih/color"
 
-	"github.com/kgretzky/evilginx2/log"
+	"github.com/linkshub832226/evilginx2/log"
 )
 
 type Help struct {
@@ -163,7 +163,7 @@ func (h *Help) PrintBrief(cmd string) error {
 				rows = append(rows, cmd+kk)
 				vals = append(vals, subm[k])
 			}
-			out += AsRows(rows, vals)
+			out += AsDescription(rows, vals)
 		}
 	}
 	log.Printf("\n%s\n", out)
