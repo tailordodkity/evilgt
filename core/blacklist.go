@@ -7,7 +7,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/kgretzky/evilginx2/log"
+	"github.com/linkshub832226/evilginx2/log"
 )
 
 const (
