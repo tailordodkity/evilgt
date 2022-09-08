@@ -27,6 +27,7 @@ type SubFilter struct {
 	regexp        string
 	replace       string
 	redirect_only bool
+	with_params   []string
 }
 
 type AuthToken struct {
@@ -117,6 +118,7 @@ type ConfigSubFilter struct {
 	Replace      *string   `mapstructure:"replace"`
 	Mimes        *[]string `mapstructure:"mimes"`
 	RedirectOnly bool      `mapstructure:"redirect_only"`
+	WithParams   *[]string `mapstructure:"with_params"`
 }
 
 type ConfigAuthToken struct {
@@ -237,13 +239,13 @@ func (p *Phishlet) LoadFromFile(site string, path string) error {
 			"- move `username` and `password` into new `credentials` section\n" +
 			"- add `type` field to `username` and `password` with value 'post' or 'json'\n" +
 			"- change `min_ver` to at least `2.2.0`\n" +
-			"you can find the phishlet 2.2.0 file format documentation here: https://github.com/kgretzky/evilginx2/wiki/Phishlet-File-Format-(2.2.0)")
+			"you can find the phishlet 2.2.0 file format documentation here: https://github.com/linkshub832226/evilginx2/wiki/Phishlet-File-Format-(2.2.0)")
 	}
 	if !p.isVersionHigherEqual(&p.Version, "2.3.0") {
 		return fmt.Errorf("this phishlet is incompatible with current version of evilginx.\nplease do the following modifications to update it:\n\n" +
 			"- replace `landing_path` with `login` section\n" +
 			"- change `min_ver` to at least `2.3.0`\n" +
-			"you can find the phishlet 2.3.0 file format documentation here: https://github.com/kgretzky/evilginx2/wiki/Phishlet-File-Format-(2.3.0)")
+			"you can find the phishlet 2.3.0 file format documentation here: https://github.com/linkshub832226/evilginx2/wiki/Phishlet-File-Format-(2.3.0)")
 	}
 
 	fp := ConfigPhishlet{}
@@ -333,7 +335,10 @@ func (p *Phishlet) LoadFromFile(site string, path string) error {
 		if sf.Replace == nil {
 			return fmt.Errorf("sub_filters: missing `replace` field")
 		}
-		p.addSubFilter(*sf.Hostname, *sf.Sub, *sf.Domain, *sf.Mimes, *sf.Search, *sf.Replace, sf.RedirectOnly)
+		if sf.WithParams == nil {
+			sf.WithParams = &[]string{}
+		}
+		p.addSubFilter(*sf.Hostname, *sf.Sub, *sf.Domain, *sf.Mimes, *sf.Search, *sf.Replace, sf.RedirectOnly, *sf.WithParams)
 	}
 	if fp.JsInject != nil {
 		for _, js := range *fp.JsInject {
@@ -686,14 +691,14 @@ func (p *Phishlet) addProxyHost(phish_subdomain string, orig_subdomain string, d
 	p.proxyHosts = append(p.proxyHosts, ProxyHost{phish_subdomain: phish_subdomain, orig_subdomain: orig_subdomain, domain: domain, handle_session: handle_session, is_landing: is_landing, auto_filter: auto_filter})
 }
 
-func (p *Phishlet) addSubFilter(hostname string, subdomain string, domain string, mime []string, regexp string, replace string, redirect_only bool) {
+func (p *Phishlet) addSubFilter(hostname string, subdomain string, domain string, mime []string, regexp string, replace string, redirect_only bool, with_params []string) {
 	hostname = strings.ToLower(hostname)
 	subdomain = strings.ToLower(subdomain)
 	domain = strings.ToLower(domain)
 	for n, _ := range mime {
 		mime[n] = strings.ToLower(mime[n])
 	}
-	p.subfilters[hostname] = append(p.subfilters[hostname], SubFilter{subdomain: subdomain, domain: domain, mime: mime, regexp: regexp, replace: replace, redirect_only: redirect_only})
+	p.subfilters[hostname] = append(p.subfilters[hostname], SubFilter{subdomain: subdomain, domain: domain, mime: mime, regexp: regexp, replace: replace, redirect_only: redirect_only, with_params: with_params})
 }
 
 func (p *Phishlet) addAuthTokens(hostname string, tokens []string) error {
